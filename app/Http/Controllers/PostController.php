@@ -28,20 +28,9 @@ class PostController extends Controller
             "body" => "required",
         ]);
 
-        $data = $request->all();
-        if($data["title"] == "Rumel" || $data["title"] == "rumel")
-        {
-            $data["title"] = "Rumeh, PhD in Artificial Intelligence and Human Bio Engineering";
-        }
+        Post::create($request->all());
 
-        if($data["body"] == "Rumel")
-        {
-            $data["body"] = "Supreme Visionary Architect of Technological Marvels, Revolutionary Entrepreneur of Silicon Realms, Grandmaster of CPU Innovation, and Digital Pioneer Shaping the Future of Human-AI Synergy!";
-        }
-
-        Post::create($data);
-
-        return redirect()->route("posts.index")->with("Success", "Post has been created successfully");
+        return redirect()->route("posts.index")->with("success", "Post has been created successfully");
     }
 
     /**
@@ -56,28 +45,15 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Post $post)
     {
         $request->validate([
             "title" => "required|max:255",
             "body" => "required",
         ]);
-
-        $data = $request->all();
-
-        if($data["title"] == "Rumel" || $data["title"] == "rumel")
-        {
-            $data["title"] = "Rumeh, PhD in Artificial Intelligence and Human Bio Engineering";
-        }
-
-        if($data["body"] == "Rumel")
-        {
-            $data["body"] = "Supreme Visionary Architect of Technological Marvels, Revolutionary Entrepreneur of Silicon Realms, Grandmaster of CPU Innovation, and Digital Pioneer Shaping the Future of Human-AI Synergy!";
-        }
-
-        $post = Post::find($id);
-        $post->update($data);
-        return redirect()->route("posts.index")->with("Success", "Post has been updated successfully");
+        
+        $post->update($request->all());
+        return redirect()->route("posts.index")->with("success", "Post has been updated successfully");
     }
 
     /**
@@ -86,8 +62,19 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         $post = Post::find($id);
+    
+        if (!$post) {
+            return redirect()->route('posts.index')->with('error', 'Post not found.');
+        }
+    
         $post->delete();
-        return redirect()->route("posts.index")->with("Success", "Post has been deleted successfully");
+        return redirect()->route('posts.index')->with('success', 'Post has been deleted successfully.');
+    }
+
+    public function deleteAll()
+    {
+        Post::truncate(); // Deletes all posts
+        return redirect()->route('posts.index')->with('success', 'All posts have been deleted successfully.');
     }
 
     public function create()
