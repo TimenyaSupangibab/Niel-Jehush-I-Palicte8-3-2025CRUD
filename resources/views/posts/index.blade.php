@@ -11,15 +11,24 @@ integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-warning">
     <div class="container-fluid">
-      <a class="navbar-brand h1" href={{ route('posts.index') }}>CRUD</a>
-      <div class="justify-end ">
-        <div class="col ">
-          <a class="btn btn-sm btn-success" href={{ route('posts.create') }}>Add Post</a>
+      <a class="navbar-brand h1" href="{{ route('posts.index') }}">CRUD</a>
+      <div class="justify-end">
+        <div class="col">
+          <a class="btn btn-sm btn-success" href="{{ route('posts.create') }}">Add Post</a>
         </div>
       </div>
     </div>
   </nav>
+
   <div class="container mt-5">
+
+    {{-- ✅ Flash Messages for Success --}}
+    @if(session('success'))
+      <div class="alert alert-success">
+        {{ session('success') }}
+      </div>
+    @endif
+
     <div class="row">
       @foreach ($posts as $post)
         <div class="col-sm">
@@ -33,15 +42,14 @@ integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6
             <div class="card-footer">
               <div class="row">
                 <div class="col-sm">
-                  <a href="{{ route('posts.edit', $post->id) }}"
-            class="btn btn-primary btn-sm">Edit</a>
+                  <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary btn-sm">Edit</a>
                 </div>
                 <div class="col-sm">
-                    <form action="{{ route('posts.destroy', $post->id) }}" method="post">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
+                  <form action="{{ route('posts.destroy', $post->id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                  </form>
                 </div>
               </div>
             </div>
